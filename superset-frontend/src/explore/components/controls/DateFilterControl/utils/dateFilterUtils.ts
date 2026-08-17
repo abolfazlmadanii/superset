@@ -26,6 +26,7 @@ import {
   COMMON_RANGE_VALUES_SET,
   CALENDAR_RANGE_VALUES_SET,
   CURRENT_RANGE_VALUES_SET,
+  PERSIAN_RANGE_VALUES_SET,
 } from '.';
 import { FrameType } from '../types';
 
@@ -38,6 +39,9 @@ export const guessFrame = (timeRange: string): FrameType => {
   }
   if (CURRENT_RANGE_VALUES_SET.has(timeRange)) {
     return 'Current';
+  }
+  if (PERSIAN_RANGE_VALUES_SET.has(timeRange)) {
+    return 'Persian';
   }
   if (timeRange === NO_TIME_RANGE) {
     return 'No filter';

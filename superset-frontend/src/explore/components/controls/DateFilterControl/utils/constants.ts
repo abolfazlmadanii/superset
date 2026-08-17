@@ -41,8 +41,19 @@ export const FRAME_OPTIONS: SelectOptionType[] = [
   { value: 'Current', label: t('Current') },
   { value: 'Custom', label: t('Custom') },
   { value: 'Advanced', label: t('Advanced') },
+  { value: 'Persian', label: t('Persian Calendar') },
   { value: 'No filter', label: t('No filter') },
 ];
+
+export const PERSIAN_RANGE_OPTIONS: CheckboxOptionType[] = [
+  { value: 'Last 7 days', label: t('Last 7 days') },
+  { value: 'Last 30 days', label: t('Last 30 days') },
+  { value: 'Last 90 days', label: t('Last 90 days') },
+  { value: 'Last year', label: t('Last year') },
+];
+export const PERSIAN_RANGE_VALUES_SET = new Set(
+  PERSIAN_RANGE_OPTIONS.map(option => option.value),
+);
 
 export const COMMON_RANGE_OPTIONS: CheckboxOptionType[] = [
   { value: 'Last day', label: t('Last day') },

@@ -50,6 +50,7 @@ import {
   CustomFrame,
   AdvancedFrame,
   DateLabel,
+  PersianCalendarFrame,
 } from './components';
 import { CurrentCalendarFrame } from './components/CurrentCalendarFrame';
 
@@ -187,6 +188,7 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
           guessedFrame === 'Common' ||
           guessedFrame === 'Calendar' ||
           guessedFrame === 'Current' ||
+          guessedFrame === 'Persian' ||
           guessedFrame === 'No filter'
         ) {
           setActualTimeRange(value);
@@ -296,6 +298,12 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
           value={timeRangeValue}
           onChange={setTimeRangeValue}
           isOverflowingFilterBar={isOverflowingFilterBar}
+        />
+      )}
+      {frame === 'Persian' && (
+        <PersianCalendarFrame
+          value={timeRangeValue}
+          onChange={setTimeRangeValue}
         />
       )}
       {frame === 'No filter' && <div data-test={DateFilterTestKey.NoFilter} />}
