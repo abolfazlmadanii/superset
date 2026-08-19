@@ -44,6 +44,56 @@ under the License.
 
 A modern, enterprise-ready business intelligence web application.
 
+## Fork: Persian (Jalali) calendar
+
+This repository also contains a **community Persian Calendar date filter**. It is not part of upstream Apache Superset. Full design, Docker notes, and upgrade notes: [PERSIAN_CALENDAR.md](PERSIAN_CALENDAR.md).
+
+### Tests that have been run
+
+#### Jest (unit / component)
+
+All of these passed on the host frontend:
+
+| Suite | What it covers |
+|------|----------------|
+| `spec/utils/persianCalendar.test.ts` | Jalali weekday names, Nowruz 1403 round-trip, RTL, `fa` locale |
+| `spec/explore/.../JalaliDatePicker.test.tsx` | Empty range when conversion fails |
+| `spec/explore/.../PersianCalendarFrame.test.tsx` | Presets, custom Jalali range, persisted values, Jalali→Gregorian, Last 365 days, auto Last 7 days, inverted range swap, set start to today |
+| `src/explore/.../tests/guessFrame.test.ts` | `Last year` stays Common; Persian relative + date-only ranges; Custom ISO stays Custom |
+| `src/explore/.../tests/DateFilterLabel.test.tsx` | Opens Persian frame, Range type → Persian Calendar |
+| DateFilterControl + related suites | **64/64** in the DateFilter / Persian files |
+| Native filters + time comparison | **354** passed |
+| `src/explore` + `src/filters` | **822** passed |
+
+Five pre-existing Explore suites still fail with an unrelated `blob/esm` `Function.prototype.apply` error. They are not caused by the Persian calendar work.
+
+```bash
+cd superset-frontend
+npm run test -- spec/utils/persianCalendar.test.ts \
+  spec/explore/components/controls/DateFilterControl/ \
+  src/explore/components/controls/DateFilterControl/tests/
+```
+
+#### Playwright (Google Chrome, Docker operational)
+
+Ran headed against this Compose stack: Flask `http://localhost:8088`, login `admin` / `admin` (`CYPRESS_CONFIG=false`). **4/4 passed.**
+
+| Spec | Test |
+|------|------|
+| `playwright/tests/auth/login.spec.ts` | Wrong password stays on login |
+| `playwright/tests/auth/login.spec.ts` | Admin login reaches Welcome |
+| `playwright/tests/explore/persian-calendar.spec.ts` | Explore → Time range → Persian Calendar → Last 30 days |
+| `playwright/tests/explore/persian-calendar.spec.ts` | Explore → Persian Calendar → custom Jalali range (chart `Weekly Messages`, filter `ts`) |
+
+```bash
+cd superset-frontend
+PLAYWRIGHT_BASE_URL=http://localhost:8088 \
+SUPERSET_ADMIN_PASSWORD=admin \
+PLAYWRIGHT_CHANNEL=chrome \
+npx playwright test --headed playwright/tests
+```
+
+[**Persian Calendar tests**](#fork-persian-jalali-calendar) |
 [**Why Superset?**](#why-superset) |
 [**Supported Databases**](#supported-databases) |
 [**Installation and Configuration**](#installation-and-configuration) |

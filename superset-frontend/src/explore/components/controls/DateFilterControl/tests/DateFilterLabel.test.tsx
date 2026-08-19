@@ -20,7 +20,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
-import { render, screen, userEvent } from 'spec/helpers/testing-library';
+import { render, screen, userEvent, selectOption } from 'spec/helpers/testing-library';
 
 import { NO_TIME_RANGE } from '@superset-ui/core';
 import DateFilterLabel from '..';
@@ -92,4 +92,30 @@ test('Open and close popover', () => {
   userEvent.click(screen.getByText('APPLY'));
   expect(defaultProps.onClosePopover).toHaveBeenCalled();
   expect(screen.queryByText('Edit time range')).not.toBeInTheDocument();
+});
+
+test('opens Persian calendar frame for Persian time ranges', async () => {
+  render(setup({ ...defaultProps, value: 'Last 7 days' }));
+
+  await userEvent.click(screen.getByText('Last 7 days'));
+
+  expect(
+    screen.getByTestId(DateFilterTestKey.PersianFrame),
+  ).toBeInTheDocument();
+  expect(screen.getByText('Persian calendar filter')).toBeInTheDocument();
+  expect(screen.getByRole('radio', { name: /Last 7 days/i })).toBeChecked();
+});
+
+test('switches to Persian Calendar from the range type dropdown', async () => {
+  render(setup());
+
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await selectOption('Persian Calendar', 'Range type');
+
+  expect(
+    screen.getByTestId(DateFilterTestKey.PersianFrame),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('radio', { name: /Last 7 days/i }),
+  ).toBeChecked();
 });

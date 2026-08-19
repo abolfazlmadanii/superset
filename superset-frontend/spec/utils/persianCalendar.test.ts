@@ -21,6 +21,8 @@ import {
   gregorianToPersian,
   isPersianLocale,
   isRTLLayout,
+  isValidPersianDate,
+  persianToGregorian,
 } from 'src/utils/persianCalendar';
 
 const defaultDir = document.documentElement.dir;
@@ -48,6 +50,22 @@ afterEach(() => {
 test('gregorian dates map to correct Persian weekday names', () => {
   expect(gregorianToPersian(2024, 3, 31).weekday).toBe('یکشنبه');
   expect(gregorianToPersian(2024, 4, 1).weekday).toBe('دوشنبه');
+});
+
+test('round-trips Nowruz 1403 between Gregorian and Jalali', () => {
+  expect(gregorianToPersian(2024, 3, 20)).toMatchObject({
+    year: 1403,
+    month: 1,
+    day: 1,
+    monthName: 'فروردین',
+  });
+  expect(persianToGregorian(1403, 1, 1)).toEqual({
+    year: 2024,
+    month: 3,
+    day: 20,
+  });
+  expect(isValidPersianDate(1403, 1, 1)).toBe(true);
+  expect(isValidPersianDate(1403, 12, 31)).toBe(false);
 });
 
 test('detects RTL when document direction is rtl', () => {

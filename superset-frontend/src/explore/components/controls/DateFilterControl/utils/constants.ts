@@ -49,11 +49,14 @@ export const PERSIAN_RANGE_OPTIONS: CheckboxOptionType[] = [
   { value: 'Last 7 days', label: t('Last 7 days') },
   { value: 'Last 30 days', label: t('Last 30 days') },
   { value: 'Last 90 days', label: t('Last 90 days') },
-  { value: 'Last year', label: t('Last year') },
+  { value: 'Last 365 days', label: t('Last 365 days') },
 ];
 export const PERSIAN_RANGE_VALUES_SET = new Set(
   PERSIAN_RANGE_OPTIONS.map(option => option.value),
 );
+
+// Date-only ranges emitted by PersianCalendarFrame (Custom uses ISO datetimes).
+export const PERSIAN_DATE_ONLY_RANGE = /^\d{4}-\d{2}-\d{2} : \d{4}-\d{2}-\d{2}$/;
 
 export const COMMON_RANGE_OPTIONS: CheckboxOptionType[] = [
   { value: 'Last day', label: t('Last day') },
@@ -158,6 +161,7 @@ export const MIDNIGHT = extendedDayjs()
 
 export enum DateFilterTestKey {
   CommonFrame = 'common-frame',
+  PersianFrame = 'persian-frame',
   ModalOverlay = 'modal-overlay',
   PopoverOverlay = 'time-range-trigger',
   NoFilter = 'no-filter',

@@ -177,11 +177,11 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
           HRT == human readable text
           ADR == actual datetime range
           +--------------+------+----------+--------+----------+-----------+
-          |              | Last | Previous | Custom | Advanced | No Filter |
-          +--------------+------+----------+--------+----------+-----------+
-          | control pill | HRT  | HRT      | ADR    | ADR      |   HRT     |
-          +--------------+------+----------+--------+----------+-----------+
-          | tooltip      | ADR  | ADR      | HRT    | HRT      |   ADR     |
+          |              | Last | Previous | Persian | Custom | Advanced | No Filter |
+          +--------------+------+----------+---------+--------+----------+-----------+
+          | control pill | HRT  | HRT      | HRT     | ADR    | ADR      |   HRT     |
+          +--------------+------+----------+---------+--------+----------+-----------+
+          | tooltip      | ADR  | ADR      | ADR     | HRT    | HRT      |   ADR     |
           +--------------+------+----------+--------+----------+-----------+
         */
         if (

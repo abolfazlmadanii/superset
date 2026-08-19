@@ -54,7 +54,7 @@ export default defineConfig({
       ]
     : [
         ['list'], // Shows summary table locally
-        ['html', { outputFolder: 'playwright-report', open: 'on-failure' }], // Auto-open on failure
+        ['html', { outputFolder: 'playwright-report', open: 'never' }],
       ],
 
   // Global test setup
@@ -80,6 +80,10 @@ export default defineConfig({
       name: 'chromium',
       use: {
         browserName: 'chromium',
+        // PLAYWRIGHT_CHANNEL=chrome uses the installed Google Chrome
+        ...(process.env.PLAYWRIGHT_CHANNEL
+          ? { channel: process.env.PLAYWRIGHT_CHANNEL }
+          : {}),
         testIdAttribute: 'data-test',
       },
     },

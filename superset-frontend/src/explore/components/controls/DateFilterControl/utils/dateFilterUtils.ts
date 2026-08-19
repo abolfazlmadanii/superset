@@ -26,9 +26,16 @@ import {
   COMMON_RANGE_VALUES_SET,
   CALENDAR_RANGE_VALUES_SET,
   CURRENT_RANGE_VALUES_SET,
+  PERSIAN_DATE_ONLY_RANGE,
   PERSIAN_RANGE_VALUES_SET,
 } from '.';
 import { FrameType } from '../types';
+
+export const isPersianDateOnlyRange = (timeRange: string): boolean =>
+  PERSIAN_DATE_ONLY_RANGE.test(timeRange);
+
+export const isPersianTimeRange = (timeRange: string): boolean =>
+  PERSIAN_RANGE_VALUES_SET.has(timeRange) || isPersianDateOnlyRange(timeRange);
 
 export const guessFrame = (timeRange: string): FrameType => {
   if (COMMON_RANGE_VALUES_SET.has(timeRange)) {
@@ -40,7 +47,7 @@ export const guessFrame = (timeRange: string): FrameType => {
   if (CURRENT_RANGE_VALUES_SET.has(timeRange)) {
     return 'Current';
   }
-  if (PERSIAN_RANGE_VALUES_SET.has(timeRange)) {
+  if (isPersianTimeRange(timeRange)) {
     return 'Persian';
   }
   if (timeRange === NO_TIME_RANGE) {

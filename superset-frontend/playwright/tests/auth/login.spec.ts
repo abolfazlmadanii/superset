@@ -21,6 +21,8 @@ import { test, expect } from '@playwright/test';
 import { AuthPage } from '../../pages/AuthPage';
 import { URL } from '../../utils/urls';
 
+const ADMIN_PASSWORD = process.env.SUPERSET_ADMIN_PASSWORD || 'admin';
+
 test.describe('Login view', () => {
   let authPage: AuthPage;
 
@@ -65,7 +67,7 @@ test.describe('Login view', () => {
     const loginRequestPromise = authPage.waitForLoginRequest();
 
     // Login with correct credentials
-    await authPage.loginWithCredentials('admin', 'general');
+    await authPage.loginWithCredentials('admin', ADMIN_PASSWORD);
 
     // Wait for login request and verify response
     const loginResponse = await loginRequestPromise;

@@ -17,7 +17,7 @@
  * under the License.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { NO_TIME_RANGE, t } from '@superset-ui/core';
+import { t } from '@superset-ui/core';
 import { css, styled } from '@apache-superset/core/ui';
 // eslint-disable-next-line no-restricted-imports
 import { Button } from '@superset-ui/core/components/Button';
@@ -32,6 +32,8 @@ import {
   isRTLLayout,
   persianToGregorian,
 } from 'src/utils/persianCalendar';
+import { DateFilterTestKey } from '../utils';
+import { FrameComponentProps } from '../types';
 import { JalaliDatePicker } from './JalaliDatePicker';
 
 type PersianCalendarRangeType =
@@ -77,9 +79,9 @@ const RANGE_DEFINITIONS: RangeDefinition[] = [
   },
   {
     key: 'last_year',
-    label: t('Last year'),
+    label: t('Last 365 days'),
     labelFa: PERSIAN_RANGE_LABELS.last_year,
-    timeRange: 'Last year',
+    timeRange: 'Last 365 days',
   },
   {
     key: 'custom_range',
@@ -124,10 +126,7 @@ const toPersianDigits = (value: string) =>
 // Jalali years (13xx/14xx) stay below 1700, while persisted Gregorian years exceed it.
 const YEAR_THRESHOLD_GREGORIAN_VS_JALALI = 1700;
 
-interface FrameComponentProps {
-  onChange: (value: string) => void;
-  value?: string;
-}
+const DEFAULT_TIME_RANGE = RANGE_KEY_TO_VALUE.get(DEFAULT_RANGE) as string;
 
 const Container = styled.div<{ $isRTL: boolean }>`
   ${({ theme, $isRTL }) => css`
@@ -189,7 +188,7 @@ const RadioList = styled.div`
 
 export function PersianCalendarFrame({
   onChange,
-  value,
+  value = '',
 }: FrameComponentProps) {
   const [selectedRange, setSelectedRange] = useState<PersianCalendarRangeType>(
     DEFAULT_RANGE,
@@ -225,13 +224,6 @@ export function PersianCalendarFrame({
   );
 
   useEffect(() => {
-    if (!value || value === NO_TIME_RANGE) {
-      setSelectedRange(DEFAULT_RANGE);
-      setCustomStartDate(null);
-      setCustomEndDate(null);
-      return;
-    }
-
     const matchedRange = RANGE_VALUE_TO_KEY.get(value);
     if (matchedRange) {
       setSelectedRange(matchedRange);
@@ -248,9 +240,17 @@ export function PersianCalendarFrame({
         setSelectedRange('custom_range');
         setCustomStartDate(normalizeToGregorian(start));
         setCustomEndDate(normalizeToGregorian(end));
+        return;
       }
     }
-  }, [normalizeToGregorian, value]);
+
+    setSelectedRange(DEFAULT_RANGE);
+    setCustomStartDate(null);
+    setCustomEndDate(null);
+    if (value !== DEFAULT_TIME_RANGE) {
+      onChange(DEFAULT_TIME_RANGE);
+    }
+  }, [normalizeToGregorian, onChange, value]);
 
   const updateCustomRange = useCallback(
     (startDate: Dayjs | null, endDate: Dayjs | null) => {
@@ -259,8 +259,13 @@ export function PersianCalendarFrame({
       setCustomStartDate(normalizedStart);
       setCustomEndDate(normalizedEnd);
       if (normalizedStart && normalizedEnd) {
+        const [rangeStart, rangeEnd] = normalizedStart.isAfter(normalizedEnd)
+          ? [normalizedEnd, normalizedStart]
+          : [normalizedStart, normalizedEnd];
+        setCustomStartDate(rangeStart);
+        setCustomEndDate(rangeEnd);
         onChange(
-          `${normalizedStart.format('YYYY-MM-DD')} : ${normalizedEnd.format(
+          `${rangeStart.format('YYYY-MM-DD')} : ${rangeEnd.format(
             'YYYY-MM-DD',
           )}`,
         );
@@ -361,7 +366,7 @@ export function PersianCalendarFrame({
     : t('Select date range');
 
   return (
-    <Container $isRTL={isRTL}>
+    <Container $isRTL={isRTL} data-test={DateFilterTestKey.PersianFrame}>
       <SectionTitle>{titleText}</SectionTitle>
       <section>
         <SectionLabel>{selectRangeText}</SectionLabel>
